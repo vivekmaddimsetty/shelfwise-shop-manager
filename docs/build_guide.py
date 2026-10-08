@@ -178,7 +178,7 @@ def build():
     feature_rows = [
         [P("SCREEN", "TableHead"), P("WHAT YOU CAN DO", "TableHead"), P("WHY IT MATTERS", "TableHead")],
         [P("Overview", "TableBody"), P("See active sales, order count, product count, low-stock items, and recent orders.", "TableBody"), P("A shop owner sees the work that needs attention first.", "TableBody")],
-        [P("Inventory", "TableBody"), P("Search products, add an item, and update its on-hand stock.", "TableBody"), P("Stock counts and reorder points are visible together.", "TableBody")],
+        [P("Inventory", "TableBody"), P("Search products, add an item, update its on-hand stock, and export the complete catalog to CSV.", "TableBody"), P("Stock counts and reorder points stay easy to review in the app or a spreadsheet.", "TableBody")],
         [P("Orders", "TableBody"), P("Create a multi-item order or cancel a placed order.", "TableBody"), P("Order creation deducts stock; cancellation returns it.", "TableBody")],
     ]
     story += [table(feature_rows, [1.05 * inch, 3.0 * inch, 2.7 * inch]), Spacer(1, 0.18 * inch), P("The main user flow", "Subhead")]
@@ -192,7 +192,7 @@ def build():
         [P("backend/server.py", "TableBody"), P("HTTP routes, request validation, database schema, sample data, order transactions, and cancellation logic.", "TableBody")],
         [P("frontend/index.html", "TableBody"), P("The dashboard, inventory and order screens, and accessible product/order dialogs.", "TableBody")],
         [P("frontend/styles.css", "TableBody"), P("Visual styles and responsive behavior for laptop and mobile widths.", "TableBody")],
-        [P("frontend/app.js", "TableBody"), P("Fetch calls, form events, view navigation, loading data, and updating the UI.", "TableBody")],
+        [P("frontend/app.js", "TableBody"), P("Fetch calls, form events, view navigation, loading data, updating the UI, and safe CSV generation.", "TableBody")],
         [P("data/shelfwise.db", "TableBody"), P("Local SQLite file created when the server starts. It is ignored by Git.", "TableBody")],
     ]
     story += [table(files, [1.75 * inch, 5.0 * inch]), Spacer(1, 0.16 * inch), P("A typical request", "Subhead"), P("The browser sends JSON with fetch(). The Python handler routes the request, checks the fields, and uses SQL statements to read or change data. The server sends JSON back; the browser then updates the visible page. Both ends use JSON, so the browser does not need direct database access.", "BodySmall"), callout("Why the UI and server are separate", "The same API rules apply whether an order comes from this screen, a future mobile app, or another client. Keeping the rule on the server prevents a browser-side check from being bypassed."), PageBreak()]

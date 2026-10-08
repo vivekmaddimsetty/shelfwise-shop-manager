@@ -20,6 +20,7 @@ To start with a clean sample database, stop the server and remove `data/shelfwis
 
 - Dashboard with product, order, revenue, and low-stock summaries.
 - Searchable inventory with product creation and stock updates.
+- One-click CSV export of the complete catalog, with spreadsheet formula characters neutralized.
 - Order creation with multiple products and quantities.
 - Order cancellation that returns its items to stock.
 - SQLite persistence and transaction-safe stock deduction.

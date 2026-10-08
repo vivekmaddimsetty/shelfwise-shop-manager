@@ -77,6 +77,46 @@ async function loadProducts(search = "") {
   }).join("");
 }
 
+function csvCell(value) {
+  const text = String(value ?? "");
+  // Prefix spreadsheet formula characters so imported product text stays data.
+  const safeText = /^[\t\r\n ]*[=+\-@]/.test(text) ? `'${text}` : text;
+  return `"${safeText.replaceAll('"', '""')}"`;
+}
+
+async function exportInventory() {
+  try {
+    const products = await api("/api/products");
+    if (!products.length) {
+      showToast("There are no products to export yet.", true);
+      return;
+    }
+    const rows = [
+      ["Product", "SKU", "Category", "Price (USD)", "Stock", "Reorder level"],
+      ...products.map(product => [
+        product.name,
+        product.sku,
+        product.category,
+        (product.priceCents / 100).toFixed(2),
+        product.stock,
+        product.reorderLevel,
+      ]),
+    ];
+    const csv = `\uFEFF${rows.map(row => row.map(csvCell).join(",")).join("\r\n")}`;
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `shelfwise-inventory-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast(`Exported ${products.length} products to CSV.`);
+  } catch (error) {
+    showToast(error.message, true);
+  }
+}
+
 async function loadOrders() {
   state.orders = await api("/api/orders");
   document.querySelector("#orders-count").textContent = state.orders.length;
@@ -131,6 +171,7 @@ document.querySelectorAll('[data-action="new-order"]').forEach(button => button.
 document.querySelectorAll("[data-close]").forEach(button => button.addEventListener("click", () => document.querySelector(`#${button.dataset.close}`).close()));
 document.querySelectorAll("dialog").forEach(dialog => dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); }));
 document.querySelector("#add-order-line").addEventListener("click", addOrderLine);
+document.querySelector("#export-products").addEventListener("click", exportInventory);
 
 document.querySelector("#product-form").addEventListener("submit", async event => {
   event.preventDefault();
